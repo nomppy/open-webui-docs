@@ -43,7 +43,7 @@ pip install -r requirements.txt -U
 bash dev.sh
 ```
 
-### In docker container
+## In docker container
 Assuming you have already cloned the repo and created a `.env`.
 
 1. Create a new file `compose-dev.yaml`. The following uses [Docker compose watch](https://docs.docker.com/compose/file-watch/) to automatically detect changes in the host filesystem and sync them to the container. 
@@ -108,3 +108,23 @@ volumes:
 ```
 2. To start the containers, run `docker compose -f compose-dev.yaml up --watch`. 
 3. To stop, hit `ctrl-c` or run `docker compose -f compose-dev.yaml down
+
+### Pipelines 
+If you are using [pipelines](https://docs.openwebui.com/pipelines/), you can add the following:
+
+:::info
+This uses volume bind-mounts, which are distinct from named volumes. You can read more about the difference [here](https://docs.docker.com/storage/bind-mounts/)
+:::
+
+```yaml
+services:
+  pipelines:
+    ports:
+      - "9099:9099"
+    volumes:
+      - ./pipelines:/app/pipelines
+      - ./blueprints:/app/blueprints
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: always
+```
